@@ -509,6 +509,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(1);
@@ -551,23 +553,55 @@ var Modal = function (_React$Component) {
     _this.el = document.createElement("div");
     _this.openPortal = _this.openPortal.bind(_this);
     _this.closePortal = _this.closePortal.bind(_this);
+    _this.closeKeyPress = _this.closeKeyPress.bind(_this);
+    _this.closeOnClick = _this.closeOnClick.bind(_this);
     return _this;
   }
 
   _createClass(Modal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var defaultOpen = this.props.defaultOpen;
+
+      if (defaultOpen) {
+        this.openPortal();
+      }
+    }
+  }, {
     key: "openPortal",
     value: function openPortal() {
       var _props = this.props,
           node = _props.node,
-          onOpen = _props.onOpen;
+          onOpen = _props.onOpen,
+          closeOnEsc = _props.closeOnEsc,
+          closeAfter = _props.closeAfter;
 
+      if (node.contains(this.el)) return;
       node.appendChild(this.el);
       onOpen && onOpen();
-      var closeAfter = this.props.closeAfter;
-
+      if (closeOnEsc) {
+        console.log("Inside evnt handler");
+        document.addEventListener("keydown", this.closeKeyPress);
+      }
       if (closeAfter) {
         setTimeout(this.closePortal, closeAfter);
       }
+    }
+  }, {
+    key: "closeKeyPress",
+    value: function closeKeyPress(e) {
+      console.log("Inside evnt handler", e);
+      if (e.key === "Escape") {
+        this.closePortal();
+      }
+    }
+  }, {
+    key: "closeOnClick",
+    value: function closeOnClick(e) {
+      var closeOnOuterClick = this.props.closeOnOuterClick;
+
+      e.stopPropagation();
+      closeOnOuterClick && this.closePortal();
     }
   }, {
     key: "closePortal",
@@ -591,12 +625,23 @@ var Modal = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var _props3 = this.props,
           trigger = _props3.trigger,
           closable = _props3.closable,
           _props3$size = _props3.size,
           size = _props3$size === undefined ? "" : _props3$size;
 
+      var children = _react2.default.Children.map(this.props.children, function (child, index) {
+        if (typeof child === "string") {
+          return child;
+        }
+        return _react2.default.cloneElement(child, _extends({}, _this2.props, {
+          close: _this2.closePortal,
+          open: _this2.openPortal
+        }));
+      });
       return _react2.default.createElement(
         _react.Fragment,
         null,
@@ -607,7 +652,7 @@ var Modal = function (_React$Component) {
         ),
         _reactDom2.default.createPortal(_react2.default.createElement(
           "div",
-          { className: "portal-wrapper " + size },
+          { className: "portal-wrapper " + size, onClick: this.closeOnClick },
           _react2.default.createElement(
             "div",
             { className: "content" },
@@ -616,7 +661,7 @@ var Modal = function (_React$Component) {
               { className: "close-btn", onClick: this.closePortal },
               "x"
             ),
-            this.props.children
+            children
           )
         ), this.el)
       );

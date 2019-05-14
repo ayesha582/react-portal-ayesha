@@ -12,21 +12,47 @@ class Modal extends React.Component {
     this.el = document.createElement("div");
     this.openPortal = this.openPortal.bind(this);
     this.closePortal = this.closePortal.bind(this);
+    this.closeKeyPress = this.closeKeyPress.bind(this);
+    this.closeOnClick = this.closeOnClick.bind(this);
+  }
+
+  componentDidMount(){
+    const {defaultOpen} = this.props;
+    if(defaultOpen){
+      this.openPortal();
+    }
   }
 
   openPortal() {
-    const { node, onOpen } = this.props;
+    const { node, onOpen, closeOnEsc, closeAfter } = this.props;
+    if (node.contains(this.el)) return;
     node.appendChild(this.el);
     onOpen && onOpen();
-    const {closeAfter} =  this.props;
-    if(closeAfter){
-      setTimeout(this.closePortal,closeAfter);
+    if (closeOnEsc) {
+      console.log("Inside evnt handler");
+      document.addEventListener("keydown", this.closeKeyPress);
     }
+    if (closeAfter) {
+      setTimeout(this.closePortal, closeAfter);
+    }
+  }
+
+  closeKeyPress(e) {
+    console.log("Inside evnt handler", e);
+    if (e.key === "Escape") {
+      this.closePortal();
+    }
+  }
+
+  closeOnClick(e) {
+    const { closeOnOuterClick } = this.props;
+    e.stopPropagation();
+    closeOnOuterClick && this.closePortal();
   }
 
   closePortal() {
     const { node, onClose } = this.props;
-    if(node.contains(this.el)){
+    if (node.contains(this.el)) {
       node.removeChild(this.el);
       onClose && onClose();
     }
@@ -38,15 +64,29 @@ class Modal extends React.Component {
   }
 
   render() {
-    const { trigger, closable, size="" } = this.props;
+    const { trigger, closable, size = "" } = this.props;
+    const children = React.Children.map(this.props.children, (child, index) => {
+      if(typeof child === "string"){
+        return child;
+      }
+      return React.cloneElement(child, {
+        ...this.props,
+        close: this.closePortal,
+        open: this.openPortal
+      });
+    });
     return (
       <Fragment>
         {trigger && <Trigger onClick={this.openPortal}>{trigger}</Trigger>}
         {ReactDOM.createPortal(
-          <div className={"portal-wrapper " + size}>
+          <div className={"portal-wrapper " + size} onClick={this.closeOnClick}>
             <div className="content">
-            {closable && <button className="close-btn" onClick={this.closePortal}>x</button>}
-            {this.props.children}
+              {closable && (
+                <button className="close-btn" onClick={this.closePortal}>
+                  x
+                </button>
+              )}
+              {children}
             </div>
           </div>,
           this.el
