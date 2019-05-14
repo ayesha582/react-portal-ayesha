@@ -1,0 +1,40 @@
+.portal-wrapper{
+    position: fixed;
+    z-index: 50;
+    background-color: rgba(0,0,0,0.5);
+    width: 100vw;
+    height: 100vh;
+}
+
+.portal-wrapper.large{
+    padding: 0;
+}
+
+.portal-wrapper.medium{
+    padding-top: 200px;
+}
+
+.portal-wrapper.tiny{
+    padding-top: 200px;
+}
+
+.portal-wrapper .content{
+    background-color: #fff;
+    position: relative;
+    margin: auto;
+}
+
+.portal-wrapper.medium .content{
+    width: 80%;
+}
+
+.portal-wrapper.tiny .content{
+    width: 60%;
+}
+
+.close-btn{
+    position: absolute;
+    right: 0;
+    background: transparent;
+    border: none;
+}
