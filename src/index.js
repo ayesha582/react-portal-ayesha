@@ -29,7 +29,6 @@ class Modal extends React.Component {
     node.appendChild(this.el);
     onOpen && onOpen();
     if (closeOnEsc) {
-      console.log("Inside evnt handler");
       document.addEventListener("keydown", this.closeKeyPress);
     }
     if (closeAfter) {
@@ -38,7 +37,6 @@ class Modal extends React.Component {
   }
 
   closeKeyPress(e) {
-    console.log("Inside evnt handler", e);
     if (e.key === "Escape") {
       this.closePortal();
     }
@@ -46,7 +44,6 @@ class Modal extends React.Component {
 
   closeOnClick(e) {
     const { closeOnOuterClick } = this.props;
-    e.stopPropagation();
     closeOnOuterClick && this.closePortal();
   }
 
@@ -60,11 +57,13 @@ class Modal extends React.Component {
 
   componentWillUnmount() {
     const { node } = this.props;
-    node.removeChild(this.el);
+    if (node.contains(this.el)) {
+      node.removeChild(this.el);
+    }
   }
 
   render() {
-    const { trigger, closable, size = "" } = this.props;
+    const { trigger, closeable, size = "" } = this.props;
     const children = React.Children.map(this.props.children, (child, index) => {
       if(typeof child === "string"){
         return child;
@@ -80,8 +79,8 @@ class Modal extends React.Component {
         {trigger && <Trigger onClick={this.openPortal}>{trigger}</Trigger>}
         {ReactDOM.createPortal(
           <div className={"portal-wrapper " + size} onClick={this.closeOnClick}>
-            <div className="content">
-              {closable && (
+            <div className="content" onClick={(e)=>e.stopPropagation()}>
+              {closeable && (
                 <button className="close-btn" onClick={this.closePortal}>
                   x
                 </button>

@@ -1,7 +1,7 @@
 {
-  "name": "react-portal-ayesha",
+  "name": "react-portal-advanced",
   "version": "0.0.1",
-  "description": "Put a description here",
+  "description": "A minimal react portal component with various customization options.",
   "main": "build/index.js",
   "dependencies": {
     "react": "^16.8.6",
@@ -15,8 +15,8 @@
     "build": "webpack"
   },
   "author": {
-    "name": "Your name",
-    "email": "your email"
+    "name": "Ayesha Mundu",
+    "email": "ayeshamundu582@gmail.com"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

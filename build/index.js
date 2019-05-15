@@ -580,7 +580,6 @@ var Modal = function (_React$Component) {
       node.appendChild(this.el);
       onOpen && onOpen();
       if (closeOnEsc) {
-        console.log("Inside evnt handler");
         document.addEventListener("keydown", this.closeKeyPress);
       }
       if (closeAfter) {
@@ -590,7 +589,6 @@ var Modal = function (_React$Component) {
   }, {
     key: "closeKeyPress",
     value: function closeKeyPress(e) {
-      console.log("Inside evnt handler", e);
       if (e.key === "Escape") {
         this.closePortal();
       }
@@ -600,7 +598,6 @@ var Modal = function (_React$Component) {
     value: function closeOnClick(e) {
       var closeOnOuterClick = this.props.closeOnOuterClick;
 
-      e.stopPropagation();
       closeOnOuterClick && this.closePortal();
     }
   }, {
@@ -620,7 +617,9 @@ var Modal = function (_React$Component) {
     value: function componentWillUnmount() {
       var node = this.props.node;
 
-      node.removeChild(this.el);
+      if (node.contains(this.el)) {
+        node.removeChild(this.el);
+      }
     }
   }, {
     key: "render",
@@ -629,7 +628,7 @@ var Modal = function (_React$Component) {
 
       var _props3 = this.props,
           trigger = _props3.trigger,
-          closable = _props3.closable,
+          closeable = _props3.closeable,
           _props3$size = _props3.size,
           size = _props3$size === undefined ? "" : _props3$size;
 
@@ -655,8 +654,10 @@ var Modal = function (_React$Component) {
           { className: "portal-wrapper " + size, onClick: this.closeOnClick },
           _react2.default.createElement(
             "div",
-            { className: "content" },
-            closable && _react2.default.createElement(
+            { className: "content", onClick: function onClick(e) {
+                return e.stopPropagation();
+              } },
+            closeable && _react2.default.createElement(
               "button",
               { className: "close-btn", onClick: this.closePortal },
               "x"
@@ -679,7 +680,7 @@ exports.default = Modal;
 
 exports = module.exports = __webpack_require__(9)(false);
 // Module
-exports.push([module.i, ".portal-wrapper{\n    position: fixed;\n    z-index: 50;\n    background-color: rgba(0,0,0,0.5);\n    width: 100vw;\n    height: 100vh;\n}\n\n.portal-wrapper.large{\n    padding: 0;\n}\n\n.portal-wrapper.medium{\n    padding-top: 200px;\n}\n\n.portal-wrapper.tiny{\n    padding-top: 200px;\n}\n\n.portal-wrapper .content{\n    background-color: #fff;\n    position: relative;\n    margin: auto;\n}\n\n.portal-wrapper.medium .content{\n    width: 80%;\n}\n\n.portal-wrapper.tiny .content{\n    width: 60%;\n}\n\n.close-btn{\n    position: absolute;\n    right: 0;\n    background: transparent;\n    border: none;\n}", ""]);
+exports.push([module.i, ".portal-wrapper{\n    position: fixed;\n    z-index: 50;\n    background-color: rgba(0,0,0,0.5);\n    width: 100%;\n    height: 100%;\n    top: 0;\n}\n\n.portal-wrapper.large{\n    padding: 0;\n}\n\n.portal-wrapper.medium{\n    padding-top: 200px;\n}\n\n.portal-wrapper.tiny{\n    padding-top: 200px;\n}\n\n.portal-wrapper .content{\n    background-color: #fff;\n    position: relative;\n    margin: auto;\n    padding: 40px;\n    border-radius: 5px;\n}\n\n.portal-wrapper.medium .content{\n    width: 80%;\n}\n\n.portal-wrapper.tiny .content{\n    width: 60%;\n}\n\n.close-btn{\n    position: absolute;\n    right: 0;\n    top: 0;\n    font-size: 15px;\n    background: transparent;\n    border: none;\n}", ""]);
 
 
 
