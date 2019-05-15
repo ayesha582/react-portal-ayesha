@@ -1,6 +1,6 @@
 {
   "name": "react-portal-advanced",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A minimal react portal component with various customization options.",
   "main": "build/index.js",
   "dependencies": {
