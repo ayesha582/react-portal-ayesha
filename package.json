@@ -18,6 +18,15 @@
     "start": "webpack --watch",
     "build": "webpack"
   },
+  "keywords": [
+    "react",
+    "react-component",
+    "modal",
+    "lightbox",
+    "react-portal",
+    "portal",
+    "transportation"
+  ],
   "author": {
     "name": "Ayesha Mundu",
     "email": "ayeshamundu582@gmail.com"

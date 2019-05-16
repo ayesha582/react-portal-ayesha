@@ -1,4 +1,4 @@
-React-portal
+React-portal-advanced
 ============
 [![npm version](https://img.shields.io/npm/v/react-portal.svg?style=flat-square)](https://www.npmjs.com/package/react-portal-advanced)
 
